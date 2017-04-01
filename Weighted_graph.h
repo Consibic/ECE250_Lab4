@@ -94,12 +94,6 @@ double Weighted_graph::distance( int m, int n ) const{
     graph[m].setVisited(true);
     heap->push(start_vertex);
     while(start_index != n && !heap->empty()){
-        for(int i = 0; i < vertex_num; i++){
-            if(start_vertex.getEdge(i) != 0 && !graph[i].getVisited()){
-                graph[i].setCurrent(start_index, ini_len);
-                heap->push(graph[i]);
-            }
-        }
         start_vertex = heap->pop();
         //std::cout<<"Reached"<<start_vertex.getId()<<std::endl;
         ini_len = start_vertex.getCurrentEdge();
@@ -126,6 +120,12 @@ double Weighted_graph::distance( int m, int n ) const{
             delete heap;
             //delete [] modified;
             return INF;
+        }
+        for(int i = 0; i < vertex_num; i++){
+            if(start_vertex.getEdge(i) != 0 && !graph[i].getVisited()){
+                graph[i].setCurrent(start_index, ini_len);
+                heap->push(graph[i]);
+            }
         }
     }
 }
