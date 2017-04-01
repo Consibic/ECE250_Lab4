@@ -69,7 +69,7 @@ Weighted_graph_vertex::Weighted_graph_vertex(){
     vertexNum = 0;
     visited = false;
     current_edge = 0.0;
-    edge = new double[0];
+    //edge = new double[0];
 }
 
 Weighted_graph_vertex::~Weighted_graph_vertex(){
@@ -119,7 +119,7 @@ void Weighted_graph_vertex::addEdge( int index, double value ){
         illegal_argument ex;
         throw ex;
     }
-    if(edge[index] == 0)
+    if(edge[index] == 0.0)
         degree += 1;
     edge[index] = value;
 }
