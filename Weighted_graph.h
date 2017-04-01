@@ -113,6 +113,7 @@ double Weighted_graph::distance( int m, int n ) const{
             }
             heap->clear();
             delete heap;
+            delete [] modified;
             return start_vertex.getCurrentEdge();
         }
         if(heap->empty()){
@@ -121,6 +122,7 @@ double Weighted_graph::distance( int m, int n ) const{
             }
             heap->clear();
             delete heap;
+            delete modified;
             return INF;
         }
     }
