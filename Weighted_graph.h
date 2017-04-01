@@ -73,8 +73,8 @@ double Weighted_graph::adjacent( int m, int n ) const{
         throw ex;
     }
     double weight = graph[m].getEdge(n);
-    if(weight == 0.0 && m != n)
-        return INF;
+    //if(weight == 0.0 && m != n)
+    //    return INF;
     return weight;
 }
 
@@ -133,7 +133,7 @@ void Weighted_graph::insert( int m, int n, double w ){
         illegal_argument ex;
         throw ex;
     }
-    if(graph[m].getEdge(n) == 0.0)
+    if(graph[m].getEdge(n) == INF)
         edge_num += 1;
     graph[m].addEdge(n, w);
     graph[n].addEdge(m, w);

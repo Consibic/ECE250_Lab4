@@ -69,7 +69,7 @@ Weighted_graph_vertex::Weighted_graph_vertex(){
     vertexNum = 0;
     visited = false;
     current_edge = 0.0;
-    edge = new double[0];
+    //edge = new double[0];
 }
 
 Weighted_graph_vertex::~Weighted_graph_vertex(){
@@ -108,10 +108,10 @@ void Weighted_graph_vertex::initialize( int id_num, int vertex_num ){
     id = id_num;
     vertexNum = vertex_num;
     edge = new double[vertex_num];
-    //for(int i = 0; i < vertex_num; i++){
-    //    edge[i] = INF;
-    //}
-    //edge[id_num] = 0.0;
+    for(int i = 0; i < vertex_num; i++){
+        edge[i] = INF;
+    }
+    edge[id_num] = 0.0;
 }
 
 void Weighted_graph_vertex::addEdge( int index, double value ){
@@ -120,7 +120,7 @@ void Weighted_graph_vertex::addEdge( int index, double value ){
         throw ex;
     }
         std::cout<<"Edgeindex"<<edge[index]<<std::endl;
-    if(edge[index] == 0.0){
+    if(edge[index] == INF){
         degree += 1;
     }
 
