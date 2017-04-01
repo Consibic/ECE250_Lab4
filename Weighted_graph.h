@@ -73,6 +73,8 @@ double Weighted_graph::adjacent( int m, int n ) const{
         throw ex;
     }
     double weight = graph[m].getEdge(n);
+    if(weight == 0 && m != n)
+        return INF;
     return weight;
 }
 
@@ -91,10 +93,9 @@ double Weighted_graph::distance( int m, int n ) const{
     heap->push(start_vertex);
     while(start_index != n && !heap->empty()){
         for(int i = 0; i < vertex_num; i++){
-            if(start_vertex.getEdge(i) != 0 && start_vertex.getEdge(i) != INF){
+            if(start_vertex.getEdge(i) != 0 && !graph[i].getVisited()){
                 graph[i].setCurrent(start_index, ini_len);
-                if(!graph[i].getVisited())
-                    heap->push(graph[i]);
+                heap->push(graph[i]);
             }
         }
         start_vertex = heap->pop();
