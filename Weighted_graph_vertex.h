@@ -119,9 +119,10 @@ void Weighted_graph_vertex::addEdge( int index, double value ){
         illegal_argument ex;
         throw ex;
     }
-    std::cout<<"Reached"<<index<<std::endl;
     if(edge[index] == 0.0)
         degree += 1;
+
+    std::cout<<"Reached"<<index<< " "<<degree<<std::endl;
     edge[index] = value;
 }
 
