@@ -100,7 +100,7 @@ double Weighted_graph::distance( int m, int n ) const{
         graph[start_index].setVisited(true);
         modified[current_count] = start_index;
         //current_count += 1;
-        std::cout<<"Reached"<<current_count<<" "<<start_index<<std::endl;
+        std::cout<<"Reached"<<" "<<start_index<<std::endl;
         for(int i = 0; i < vertex_num; i++){
             if(start_vertex.getEdge(i) != 0 && !graph[i].getVisited()){
                 graph[i].setCurrent(start_index, ini_len);
