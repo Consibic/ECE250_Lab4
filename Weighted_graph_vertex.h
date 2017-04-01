@@ -69,7 +69,7 @@ Weighted_graph_vertex::Weighted_graph_vertex(){
     vertexNum = 0;
     visited = false;
     current_edge = 0.0;
-    edge = new double[0];
+    //edge = new double[0];
 }
 
 Weighted_graph_vertex::~Weighted_graph_vertex(){

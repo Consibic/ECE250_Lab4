@@ -83,6 +83,8 @@ double Weighted_graph::distance( int m, int n ) const{
         illegal_argument ex;
         throw ex;
     }
+    int* modified = new int[vertex_num];
+    int current_count = 0;
     if(m == n) return 0.0;
     Leftist_heap<Weighted_graph_vertex> *heap = new Leftist_heap<Weighted_graph_vertex>();
     Weighted_graph_vertex start_vertex = graph[m];
@@ -103,17 +105,19 @@ double Weighted_graph::distance( int m, int n ) const{
         ini_len = start_vertex.getCurrentEdge();
         start_index = start_vertex.getId();
         graph[start_index].setVisited(true);
+        modified[current_count] = start_index;
+        current_count += 1;
         if(start_vertex.getId() == n){
-            for(int i = 0; i < vertex_num; i++){
-                graph[i].setVisited(false);
+            for(int i = 0; i < current_count; i++){
+                graph[modified[current_count]].setVisited(false);
             }
             heap->clear();
             delete heap;
             return start_vertex.getCurrentEdge();
         }
         if(heap->empty()){
-            for(int i = 0; i < vertex_num; i++){
-                graph[i].setVisited(false);
+            for(int i = 0; i < current_count; i++){
+                graph[modified[current_count]].setVisited(false);
             }
             heap->clear();
             delete heap;
