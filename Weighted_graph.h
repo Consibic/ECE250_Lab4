@@ -122,7 +122,7 @@ double Weighted_graph::distance( int m, int n ) const{
             }
             heap->clear();
             delete heap;
-            delete modified;
+            delete [] modified;
             return INF;
         }
     }
