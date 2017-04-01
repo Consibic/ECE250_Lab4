@@ -133,7 +133,7 @@ void Weighted_graph::insert( int m, int n, double w ){
         illegal_argument ex;
         throw ex;
     }
-    if(graph[m].getEdge(n) == INF)
+    if(graph[m].getEdge(n) == 0)
         edge_num += 1;
     graph[m].addEdge(n, w);
     graph[n].addEdge(m, w);

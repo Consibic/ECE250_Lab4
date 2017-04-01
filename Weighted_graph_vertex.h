@@ -119,7 +119,7 @@ void Weighted_graph_vertex::addEdge( int index, double value ){
         illegal_argument ex;
         throw ex;
     }
-    if(edge[index] == INF)
+    if(edge[index] == 0)
         degree += 1;
     edge[index] = value;
 }
