@@ -4,8 +4,10 @@
 #include <limits>
 #include <stdlib.h>
 #include "Weighted_graph.h"
-//#include "Weighted_graph_vertex.h"
+#include "Weighted_graph_vertex.h"
 #include "Weighted_graph_tester.h"
+#include "Leftist_heap.h"
+#include "Leftist_node.h"
 #include "Exception.h"
 #include "Tester.h"
 #include "ece250.h"
