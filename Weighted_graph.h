@@ -118,9 +118,9 @@ double Weighted_graph::distance( int m, int n ) const{
     }
     delete [] next_list;
     double value = graph[n].current_edge;
-    for(int i = 0; i < vertex_num; i++){
-        graph[i].setVisited(false);
-        graph[i].current_edge = INF;
+    for(int i = 0; i < insert_pt; i++){
+        graph[next_list[i]].setVisited(false);
+        graph[next_list[i]].current_edge = INF;
     }
     return value;
 }
