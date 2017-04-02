@@ -102,7 +102,8 @@ double Weighted_graph::distance( int m, int n ) const{
     visited[m] = status;
     next_list[1] = -1;
     //current_edge[m] = ini_len;
-    while((current_next < vertex_num) && (next_list[current_next] != -1)){
+    if(status){
+        while((current_next < vertex_num) && (next_list[current_next] != -1)){
         parent_id = next_list[current_next];
         current_next += 1;
         ini_len = graph[parent_id].getEdge(m);
@@ -115,10 +116,10 @@ double Weighted_graph::distance( int m, int n ) const{
                     if(ini_len + length < graph[i].getEdge(m)){
                         graph[i].addEdge(m, ini_len + length);
                     }
-                    if(visited[i] != status){
+                    if(!visited[i]){
                         next_list[insert_pt] = i;
                         //graph[current_id].setVisited(true);
-                        visited[i] = status;
+                        visited[i] = true;
                         insert_pt += 1;
                         if(insert_pt < vertex_num)
                             next_list[insert_pt] = -1;
@@ -126,7 +127,36 @@ double Weighted_graph::distance( int m, int n ) const{
                 }
             }
         //}
+        }
     }
+    else{
+        while((current_next < vertex_num) && (next_list[current_next] != -1)){
+        parent_id = next_list[current_next];
+        current_next += 1;
+        ini_len = graph[parent_id].getEdge(m);
+        //if(graph[parent_id].getAdjCt() > 0){
+            //for(int i = 0; i < graph[parent_id].getAdjCt(); i++){
+            for(int i = 0; i < vertex_num; i++){
+                if(graph[parent_id].getEdge(i) != INF && graph[parent_id].getEdge(i) != 0.0){
+                    //int current_id = graph[parent_id].getCurrentAdj(i);
+                    double length = graph[i].getEdge(parent_id);
+                    if(ini_len + length < graph[i].getEdge(m)){
+                        graph[i].addEdge(m, ini_len + length);
+                    }
+                    if(visited[i]){
+                        next_list[insert_pt] = i;
+                        //graph[current_id].setVisited(true);
+                        visited[i] = false;
+                        insert_pt += 1;
+                        if(insert_pt < vertex_num)
+                            next_list[insert_pt] = -1;
+                    }
+                }
+            }
+        //}
+        }
+    }
+
     delete [] next_list;
     double value = graph[n].getEdge(m);
     status = !status;
