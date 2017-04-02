@@ -162,7 +162,7 @@ double Weighted_graph::distance( int m, int n ) const{
 				value = graph[parent_id][m];
 				break;
 			}
-			std::cout<<" "<<parent_id<<" "<<graph[parent_id][m]<<std::endl;
+			//std::cout<<" "<<parent_id<<" "<<graph[parent_id][m]<<std::endl;
 		}
 	}
     status = !status;
