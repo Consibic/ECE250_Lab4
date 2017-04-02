@@ -27,7 +27,7 @@ class Weighted_graph {
 		//double* current_edge;
 		int vertex_num;
 		int edge_num;
-		int current_count;
+		mutable int current_count;
 
 	public:
 		Weighted_graph( int = 50 );
@@ -129,12 +129,12 @@ double Weighted_graph::distance( int m, int n ) const{
     }
     delete [] next_list;
     double value = graph[n].getEdge(m);
+    current_count += 1;
     //for(int i = 0; i < vertex_num; i++){
     //    //graph[i].setVisited(false);
     //    visited[i] = false;
     //    //current_edge[i] = INF;
     //}
-    current_count += 1;
     return value;
 }
 
