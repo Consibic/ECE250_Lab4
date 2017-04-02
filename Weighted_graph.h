@@ -23,11 +23,11 @@ class Weighted_graph {
 	private:
 		static const double INF;
 		Weighted_graph_vertex* graph;
-		int* visited;
+		bool* visited;
 		//double* current_edge;
 		int vertex_num;
 		int edge_num;
-		mutable int current_count;
+		mutable bool status;
 
 	public:
 		Weighted_graph( int = 50 );
@@ -47,13 +47,13 @@ const double Weighted_graph::INF = std::numeric_limits<double>::infinity();
 
 Weighted_graph::Weighted_graph( int n ){
     graph = new Weighted_graph_vertex[n];
-    visited = new int[n];
+    visited = new bool[n];
     //current_edge = new double[n];
     edge_num = 0;
-    current_count = 0;
+    status = true;
     for(int i = 0; i < n; i++){
         graph[i].initialize(i, n);
-        visited[i] = -1;
+        visited[i] = false;
         //current_edge[i] = INF;
     }
     vertex_num = n;
@@ -99,7 +99,7 @@ double Weighted_graph::distance( int m, int n ) const{
     int current_next = 0, insert_pt = 1;
     next_list[0] = m;
     //graph[m].setVisited(true);
-    visited[m] = current_count;
+    visited[m] = status;
     next_list[1] = -1;
     //current_edge[m] = ini_len;
     while((current_next < vertex_num) && (next_list[current_next] != -1)){
@@ -115,10 +115,10 @@ double Weighted_graph::distance( int m, int n ) const{
                     if(ini_len + length < graph[i].getEdge(m)){
                         graph[i].addEdge(m, ini_len + length);
                     }
-                    if(visited[i] != current_count){
+                    if(visited[i] != status){
                         next_list[insert_pt] = i;
                         //graph[current_id].setVisited(true);
-                        visited[i] = current_count;
+                        visited[i] = status;
                         insert_pt += 1;
                         if(insert_pt < vertex_num)
                             next_list[insert_pt] = -1;
@@ -129,7 +129,7 @@ double Weighted_graph::distance( int m, int n ) const{
     }
     delete [] next_list;
     double value = graph[n].getEdge(m);
-    current_count += 1;
+    status = !status;
     //for(int i = 0; i < vertex_num; i++){
     //    //graph[i].setVisited(false);
     //    visited[i] = false;
