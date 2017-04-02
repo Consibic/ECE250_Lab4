@@ -80,6 +80,8 @@ Weighted_graph::~Weighted_graph(){
     delete [] graph;
     delete [] visited;
     delete [] degree_array;
+    heap->clear();
+	delete heap;
     //delete [] current_edge;
 }
 
@@ -164,7 +166,7 @@ double Weighted_graph::distance( int m, int n ) const{
 		}
 	}
     status = !status;
-	delete heap;
+    heap->clear();
     return value;
 }
 
