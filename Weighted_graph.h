@@ -91,6 +91,7 @@ double Weighted_graph::distance( int m, int n ) const{
     next_list[0] = m;
     next_list[1] = -1;
     graph[m].current_edge = ini_len;
+    std::cout<<vertex_num<<std::endl;
     while(next_list[current_next] != -1 && current_next < vertex_num){
         graph[parent_id].setVisited(true);
         parent_id = next_list[current_next];
