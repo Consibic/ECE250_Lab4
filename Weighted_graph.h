@@ -1,7 +1,7 @@
 /*****************************************
- * UW User ID:  y2469wan
+ * UW User ID:
  * Submitted for ECE 250
- * Semester of Submission:  (Winter) 2017
+ * Semester of Submission:
  *
  * By submitting this file, I affirm that
  * I am the author of all modifications to
@@ -29,13 +29,13 @@ class Weighted_graph {
 		int vertexID;
 		double vertexDistance;
 		int degree;
-		
+
 // Constructor of the Vertex class/object
 		Vertex(int index, double distance) {
 				vertexID = index;
 				vertexDistance = distance;
 				degree = 0;
-				
+
 			}
 // The comparison here are used in Leftist node heapify
 		friend bool operator>(const Vertex& v1, const Vertex& v2) {
@@ -106,7 +106,7 @@ Weighted_graph::Weighted_graph(int n){
         for (int j = 0; j < vertex_count; j++) {
             if (j == i) {
                 adjacencyMatrix[i][j] = 0.0;
-            } 
+            }
             else {
                 adjacencyMatrix[i][j] = INF;
             }
@@ -196,7 +196,7 @@ double Weighted_graph::distance(int m,int n) const{
 					Vertex *next = new Vertex(i,distanceArray[i]);
 					distanceHeap->push(*next);
 					delete next;
-				}	
+				}
 			}
 			if (root.vertexID == n){
 				output = distanceArray[root.vertexID];
@@ -216,7 +216,7 @@ double Weighted_graph::distance(int m,int n) const{
 		}
 		else if (discovered[n] == false){
 			double output = INF;
-		
+
 		while(!distanceHeap->empty()){
 			Vertex root = distanceHeap->pop();
 			discovered[root.vertexID]= true;
@@ -233,7 +233,7 @@ double Weighted_graph::distance(int m,int n) const{
 					Vertex *next = new Vertex(i,distanceArray[i]);
 					distanceHeap->push(*next);
 					delete next;
-				}	
+				}
 			}
 			if (root.vertexID == n){
 				output = distanceArray[root.vertexID];
@@ -243,7 +243,7 @@ double Weighted_graph::distance(int m,int n) const{
 		return output;
 		}
 	}
-	
+
 }
 
 // Upsert edge
@@ -251,12 +251,12 @@ void Weighted_graph::insert(int m,int n,double w){
 	if(w <= 0 || m == n || n < 0 || n > vertex_count-1 || m < 0 || m > vertex_count-1){
 		throw illegal_argument();
 	}
-	
+
 		if(adjacencyMatrix[m][n] == INF){
 		edge_number ++;
 		vertexArray[m]->degree +=1;
 		vertexArray[n]->degree +=1;
-	
+
 	}
 		adjacencyMatrix[m][n] = adjacencyMatrix[n][m] = w;
 		flag = true;
