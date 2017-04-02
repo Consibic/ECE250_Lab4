@@ -121,8 +121,9 @@ double Weighted_graph::distance( int m, int n ) const{
     for(int i = 0; i < vertex_num; i++){
         if (i == m) temp_distance[i] = 0.0;
         else temp_distance[i] = INF;
+        visited[i] = false;
     }
-	if (status){
+	//if (status){
 		while(!heap->empty()){
 			Weighted_graph_vertex parent = heap->pop();
 			int parent_id = parent.getId();
@@ -144,7 +145,8 @@ double Weighted_graph::distance( int m, int n ) const{
 				break;
 			}
 		}
-	}
+	//}
+	/*
 	else{
         while(!heap->empty()){
 			Weighted_graph_vertex parent = heap->pop();
@@ -168,8 +170,8 @@ double Weighted_graph::distance( int m, int n ) const{
 			}
 			//std::cout<<" "<<parent_id<<" "<<graph[parent_id][m]<<std::endl;
 		}
-	}
-    status = !status;
+	}*/
+    //status = !status;
     heap->clear();
     return value;
 }
