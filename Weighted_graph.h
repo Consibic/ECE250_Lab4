@@ -92,6 +92,7 @@ double Weighted_graph::distance( int m, int n ) const{
         for(int i = 0; i < parent_vertex.getAdjCt(); i++){
             if(!graph[parent_vertex.getCurrentAdj(i)].getVisited()){
                 next_vertex = graph[parent_vertex.getCurrentAdj(i)];
+                next_set = true;
                 break;
             }
         }
