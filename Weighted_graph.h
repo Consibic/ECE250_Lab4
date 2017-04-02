@@ -83,58 +83,35 @@ double Weighted_graph::distance( int m, int n ) const{
         illegal_argument ex;
         throw ex;
     }
-    //int* modified = new int[vertex_num];
-    //int current_count = 0;
     if(m == n) return 0.0;
-    Leftist_heap<Weighted_graph_vertex> *heap = new Leftist_heap<Weighted_graph_vertex>();
-    Weighted_graph_vertex start_vertex = graph[m];
+    Weighted_graph_vertex parent_vertex = graph[m];
+    Weighted_graph_vertex next_vertex = graph[m];
     double ini_len = 0.0;
-    start_vertex.setCurrent(m, ini_len);
-    int start_index = m;
-    graph[m].setVisited(true);
-    heap->push(start_vertex);
-    while(start_index != n && !heap->empty()){
-        start_vertex = heap->pop();
-        ini_len = start_vertex.getCurrentEdge();
-        start_index = start_vertex.getId();
-        graph[start_index].setVisited(true);
-        //modified[current_count] = start_index;
-        for(int i = 0; i< vertex_num; i++){
-            if(start_vertex.getEdge(i) != 0 && !graph[i].getVisited()){
-                graph[i].setCurrent(start_index, ini_len);
-                heap->push(graph[i]);
+    bool next_set = false;
+    do{
+        for(int i = 0; i < parent_vertex.getAdjCt(); i++){
+            if(!graph[parent_vertex.getCurrentAdj(i)].getVisited()){
+                next_vertex = graph[parent_vertex.getCurrentAdj(i)];
                 break;
             }
         }
-        //current_count += 1;
-        //std::cout<<"Reached"<<" "<<start_index<<std::endl;
-        //for(int i = 0; i < vertex_num; i++){
-        //    if(start_vertex.getEdge(i) != 0 && !graph[i].getVisited()){
-        //graph[i].setCurrent(start_index, ini_len);
-        //heap->push(graph[i]);
-        //    }
-        //}
-        if(start_vertex.getId() == n){
-            for(int i = 0; i < vertex_num; i++){
-                //graph[modified[i]].setVisited(false);
-                graph[i].setVisited(false);
+        if(!next_set) break;
+        if(parent_vertex.getAdjCt() > 0){
+            for(int i = 0; i < parent_vertex.getAdjCt(); i++){
+                Weighted_graph_vertex current_vertex = graph[parent_vertex.getCurrentAdj(i)];
+                double length = current_vertex.getEdge(parent_vertex.getId());
+                if(ini_len + length < current_vertex.current_edge){
+                    current_vertex.current_edge = ini_len + length;
+                }
             }
-            heap->clear();
-            delete heap;
-            //delete [] modified;
-            return start_vertex.getCurrentEdge();
         }
-        if(heap->empty()){
-            for(int i = 0; i < vertex_num; i++){
-                //graph[modified[i]].setVisited(false);
-                graph[i].setVisited(false);
-            }
-            heap->clear();
-            delete heap;
-            //delete [] modified;
-            return INF;
-        }
+        parent_vertex.setVisited(true);
+    }while(next_set);
+    for(int i = 0; i < vertex_num; i++){
+        graph[i].setVisited(false);
+        graph[i].current_edge = INF;
     }
+    return graph[n].current_edge;
 }
 
 void Weighted_graph::insert( int m, int n, double w ){

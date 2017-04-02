@@ -27,6 +27,8 @@ class Weighted_graph_vertex {
 		int degree;
 		int vertexNum;
 		double* edge;
+		int* adj;
+		int adj_ct;
 		bool visited;
 
 	public:
@@ -36,12 +38,12 @@ class Weighted_graph_vertex {
         int getId() const;
 		int getDegree() const;
 		double getEdge( int ) const;
-		double getCurrentEdge() const;
+		int getCurrentAdj( int ) const;
+		int getAdjCt() const;
 		bool getVisited() const;
 
 		void initialize( int, int );
 		void addEdge( int, double );
-		void setCurrent( int, double );
 		void setVisited( bool );
 		void Clear();
 
@@ -68,7 +70,8 @@ Weighted_graph_vertex::Weighted_graph_vertex(){
     id = 0;
     vertexNum = 0;
     visited = false;
-    current_edge = 0.0;
+    adj_ct = 0;
+    current_edge = INF;
     //edge = new double[0];
 }
 
@@ -92,8 +95,12 @@ double Weighted_graph_vertex::getEdge( int index ) const{
     return edge[index];
 }
 
-double Weighted_graph_vertex::getCurrentEdge() const{
-    return current_edge;
+int Weighted_graph_vertex::getCurrentAdj( int index ) const{
+    return adj[index];
+}
+
+int Weighted_graph_vertex::getAdjCt() const{
+    return adj_ct;
 }
 
 bool Weighted_graph_vertex::getVisited() const{
@@ -108,6 +115,7 @@ void Weighted_graph_vertex::initialize( int id_num, int vertex_num ){
     id = id_num;
     vertexNum = vertex_num;
     edge = new double[vertex_num];
+    adj = new int[vertex_num];
     for(int i = 0; i < vertex_num; i++){
         edge[i] = INF;
     }
@@ -123,10 +131,8 @@ void Weighted_graph_vertex::addEdge( int index, double value ){
         degree += 1;
     }
     edge[index] = value;
-}
-
-void Weighted_graph_vertex::setCurrent( int index, double ini_len ){
-    current_edge = getEdge(index) + ini_len;
+    adj[adj_ct] = index;
+    adj_ct += 1;
 }
 
 void Weighted_graph_vertex::setVisited( bool visit ){
