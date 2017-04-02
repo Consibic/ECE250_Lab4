@@ -86,12 +86,12 @@ double Weighted_graph::distance( int m, int n ) const{
     if(m == n) return 0.0;
     int parent_id = m;
     double ini_len = 0.0;
-    int* next_list = new int[vertex_num];
+    int* next_list = new int[vertex_num + 1];
     int current_next = 0, insert_pt = 1;
     next_list[0] = m;
     next_list[1] = -1;
     graph[m].current_edge = ini_len;
-    while(next_list[current_next] != -1 && current_next != vertex_num){
+    while(next_list[current_next] != -1 && current_next >= vertex_num){
         graph[parent_id].setVisited(true);
         parent_id = next_list[current_next];
         current_next += 1;
