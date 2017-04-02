@@ -47,20 +47,20 @@ class Weighted_graph_vertex {
 		//void setVisited( bool );
 		void Clear();
 
-		double current_edge;
+		//double current_edge;
 
-		friend bool operator<(const Weighted_graph_vertex & m, const Weighted_graph_vertex & n){
-            return m.current_edge < n.current_edge;
-        }
-        friend bool operator>(const Weighted_graph_vertex & m, const Weighted_graph_vertex & n){
-            return m.current_edge > n.current_edge;
-        }
-        friend bool operator>=(const Weighted_graph_vertex & m, const Weighted_graph_vertex & n){
-            return m.current_edge >= n.current_edge;
-        }
-        friend bool operator<=(const Weighted_graph_vertex & m, const Weighted_graph_vertex & n){
-            return m.current_edge <= n.current_edge;
-        }
+		//friend bool operator<(const Weighted_graph_vertex & m, const Weighted_graph_vertex & n){
+        //    return m.current_edge < n.current_edge;
+        //}
+        //friend bool operator>(const Weighted_graph_vertex & m, const Weighted_graph_vertex & n){
+        //    return m.current_edge > n.current_edge;
+        //}
+        //friend bool operator>=(const Weighted_graph_vertex & m, const Weighted_graph_vertex & n){
+        //    return m.current_edge >= n.current_edge;
+        //}
+        //friend bool operator<=(const Weighted_graph_vertex & m, const Weighted_graph_vertex & n){
+        //    return m.current_edge <= n.current_edge;
+        //}
 };
 
 const double Weighted_graph_vertex::INF = std::numeric_limits<double>::infinity();
@@ -71,7 +71,7 @@ Weighted_graph_vertex::Weighted_graph_vertex(){
     vertexNum = 0;
     //visited = false;
     //adj_ct = 0;
-    current_edge = INF;
+    //current_edge = INF;
     //edge = new double[0];
 }
 
