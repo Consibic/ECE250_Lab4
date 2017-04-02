@@ -110,12 +110,8 @@ double Weighted_graph::distance( int m, int n ) const{
                     if(insert_pt < vertex_num)
                         next_list[insert_pt] = -1;
                 }
-                //std::cout<<parent_id<<" "<<current_id<<" "<<ini_len<<std::endl;
             }
         }
-        std::cout<<"reached "<<current_next<<" "<<vertex_num<<std::endl;
-        std::cout<<" " <<(current_next < vertex_num)<<std::endl;
-        if(current_next >= vertex_num) break;
     }
     delete [] next_list;
     double value = graph[n].current_edge;
