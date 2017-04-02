@@ -29,7 +29,7 @@ class Weighted_graph_vertex {
 		double* edge;
 		//int* adj;
 		//int adj_ct;
-		bool visited;
+		//bool visited;
 
 	public:
 		Weighted_graph_vertex();
@@ -44,7 +44,7 @@ class Weighted_graph_vertex {
 
 		void initialize( int, int );
 		void addEdge( int, double );
-		void setVisited( bool );
+		//void setVisited( bool );
 		void Clear();
 
 		double current_edge;
@@ -69,7 +69,7 @@ Weighted_graph_vertex::Weighted_graph_vertex(){
     degree = 0;
     id = 0;
     vertexNum = 0;
-    visited = false;
+    //visited = false;
     //adj_ct = 0;
     current_edge = INF;
     //edge = new double[0];
@@ -103,9 +103,9 @@ double Weighted_graph_vertex::getEdge( int index ) const{
 //    return adj_ct;
 //}
 
-bool Weighted_graph_vertex::getVisited() const{
-    return visited;
-}
+//bool Weighted_graph_vertex::getVisited() const{
+//    return visited;
+//}
 
 void Weighted_graph_vertex::initialize( int id_num, int vertex_num ){
     if(vertex_num < 0 || id_num < 0){
@@ -135,9 +135,9 @@ void Weighted_graph_vertex::addEdge( int index, double value ){
     //adj_ct += 1;
 }
 
-void Weighted_graph_vertex::setVisited( bool visit ){
-    visited = visit;
-}
+//void Weighted_graph_vertex::setVisited( bool visit ){
+//    visited = visit;
+//}
 
 void Weighted_graph_vertex::Clear(){
     delete [] edge;

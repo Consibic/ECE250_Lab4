@@ -23,6 +23,7 @@ class Weighted_graph {
 	private:
 		static const double INF;
 		Weighted_graph_vertex* graph;
+		bool* visited;
 		int vertex_num;
 		int edge_num;
 
@@ -44,9 +45,11 @@ const double Weighted_graph::INF = std::numeric_limits<double>::infinity();
 
 Weighted_graph::Weighted_graph( int n ){
     graph = new Weighted_graph_vertex[n];
+    visited = new bool[n];
     edge_num = 0;
     for(int i = 0; i < n; i++){
         graph[i].initialize(i, n);
+        visited[i] = false;
     }
     vertex_num = n;
 }
@@ -88,7 +91,8 @@ double Weighted_graph::distance( int m, int n ) const{
     int* next_list = new int[vertex_num + 1];
     int current_next = 0, insert_pt = 1;
     next_list[0] = m;
-    graph[m].setVisited(true);
+    //graph[m].setVisited(true);
+    visited[m] = true;
     next_list[1] = -1;
     graph[m].current_edge = ini_len;
     while((current_next < vertex_num) && (next_list[current_next] != -1)){
@@ -105,9 +109,10 @@ double Weighted_graph::distance( int m, int n ) const{
                     if(ini_len + length < graph[current_id].current_edge){
                         graph[current_id].current_edge = ini_len + length;
                     }
-                    if(!graph[current_id].getVisited()){
+                    if(!visited[current_id]){
                         next_list[insert_pt] = current_id;
-                        graph[current_id].setVisited(true);
+                        //graph[current_id].setVisited(true);
+                        visited[i] = true;
                         insert_pt += 1;
                         if(insert_pt < vertex_num)
                             next_list[insert_pt] = -1;
@@ -118,10 +123,11 @@ double Weighted_graph::distance( int m, int n ) const{
     }
     delete [] next_list;
     double value = graph[n].current_edge;
-    //for(int i = 0; i < vertex_num; i++){
-    //    graph[i].setVisited(false);
-    //    graph[i].current_edge = INF;
-    //}
+    for(int i = 0; i < vertex_num; i++){
+        //graph[i].setVisited(false);
+        visited[i] = false;
+        graph[i].current_edge = INF;
+    }
     return value;
 }
 
