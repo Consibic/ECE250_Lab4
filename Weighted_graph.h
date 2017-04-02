@@ -120,17 +120,16 @@ double Weighted_graph::distance( int m, int n ) const{
 			for (int i = 0; i < vertex_num; i++){
                 ini_len = graph[m][parent_id];
 				double length = graph[parent_id][i];
-				if (length != INF && length != 0){
+				if (length != INF && length != 0 && !visited[i]){
                     if (ini_len + length < graph[i][m]){
                         graph[m][i] = ini_len + length;
                         graph[i][m] = ini_len + length;
                     }
-                    if(!visited[i]){
                         Weighted_graph_vertex *next = new Weighted_graph_vertex(i, graph[m][i]);
                         heap->push(*next);
                         delete next;
-                    }
-				}
+
+                }
 			}
 			if (parent_id == n){
 				value = graph[parent_id][m];
@@ -146,16 +145,14 @@ double Weighted_graph::distance( int m, int n ) const{
 			for (int i = 0; i < vertex_num; i++){
                 ini_len = graph[m][parent_id];
 				double length = graph[parent_id][i];
-				if (length != INF && length != 0){
+				if (length != INF && length != 0 && visited[i]){
                     if (ini_len + length < graph[i][m]){
                         graph[m][i] = ini_len + length;
                         graph[i][m] = ini_len + length;
                     }
-                    if(visited[i]){
                         Weighted_graph_vertex *next = new Weighted_graph_vertex(i, graph[m][i]);
                         heap->push(*next);
                         delete next;
-                    }
 				}
 			}
 			if (parent_id == n){
