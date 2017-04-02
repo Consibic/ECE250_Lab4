@@ -84,35 +84,41 @@ double Weighted_graph::distance( int m, int n ) const{
         throw ex;
     }
     if(m == n) return 0.0;
-    Weighted_graph_vertex parent_vertex = graph[m];
-    Weighted_graph_vertex next_vertex = graph[m];
+    int parent_id = m;
+    int next_id = m;
     double ini_len = 0.0;
     bool next_set = false;
+    graph[m].current_edge = ini_len;
     do{
-        for(int i = 0; i < parent_vertex.getAdjCt(); i++){
-            if(!graph[parent_vertex.getCurrentAdj(i)].getVisited()){
-                next_vertex = graph[parent_vertex.getCurrentAdj(i)];
+        next_set = false;
+        for(int i = 0; i < graph[parent_id].getAdjCt(); i++){
+            if(!graph[graph[parent_id].getCurrentAdj(i)].getVisited()){
+                next_id = graph[parent_id].getCurrentAdj(i);
                 next_set = true;
                 break;
             }
         }
-        if(!next_set) break;
-        if(parent_vertex.getAdjCt() > 0){
-            for(int i = 0; i < parent_vertex.getAdjCt(); i++){
-                Weighted_graph_vertex current_vertex = graph[parent_vertex.getCurrentAdj(i)];
-                double length = current_vertex.getEdge(parent_vertex.getId());
-                if(ini_len + length < current_vertex.current_edge){
-                    current_vertex.current_edge = ini_len + length;
+        //if(!next_set) break;
+        ini_len = graph[parent_id].current_edge;
+        if(graph[parent_id].getAdjCt() > 0){
+            for(int i = 0; i < graph[parent_id].getAdjCt(); i++){
+                int current_id = graph[parent_id].getCurrentAdj(i);
+                double length = graph[current_id].getEdge(parent_id);
+                if(ini_len + length < graph[current_id].current_edge){
+                    graph[current_id].current_edge = ini_len + length;
                 }
+                //std::cout<<parent_id<<" "<<current_id<<" "<<ini_len<<std::endl;
             }
         }
-        parent_vertex.setVisited(true);
+        graph[parent_id].setVisited(true);
+        parent_id = next_id;
     }while(next_set);
+    int value = graph[n].current_edge;
     for(int i = 0; i < vertex_num; i++){
         graph[i].setVisited(false);
         graph[i].current_edge = INF;
     }
-    return graph[n].current_edge;
+    return value;
 }
 
 void Weighted_graph::insert( int m, int n, double w ){

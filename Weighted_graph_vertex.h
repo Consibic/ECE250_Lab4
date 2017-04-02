@@ -141,6 +141,7 @@ void Weighted_graph_vertex::setVisited( bool visit ){
 
 void Weighted_graph_vertex::Clear(){
     delete [] edge;
+    delete [] adj;
 }
 
 #endif
