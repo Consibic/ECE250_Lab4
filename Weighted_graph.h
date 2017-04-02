@@ -93,8 +93,8 @@ double Weighted_graph::distance( int m, int n ) const{
     graph[m].current_edge = ini_len;
     std::cout<<vertex_num<<std::endl;
     while(next_list[current_next] != -1 && current_next < vertex_num){
-        graph[parent_id].setVisited(true);
         parent_id = next_list[current_next];
+        graph[parent_id].setVisited(true);
         current_next += 1;
         ini_len = graph[parent_id].current_edge;
         if(graph[parent_id].getAdjCt() > 0){
@@ -113,13 +113,14 @@ double Weighted_graph::distance( int m, int n ) const{
                 //std::cout<<parent_id<<" "<<current_id<<" "<<ini_len<<std::endl;
             }
         }
+    std::cout<<"reached "<<current_next<<std::endl;
     }
+    delete [] next_list;
     double value = graph[n].current_edge;
     for(int i = 0; i < vertex_num; i++){
         graph[i].setVisited(false);
         graph[i].current_edge = INF;
     }
-    delete [] next_list;
     return value;
 }
 
