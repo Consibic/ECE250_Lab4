@@ -99,7 +99,8 @@ double Weighted_graph::distance( int m, int n ) const{
             //for(int i = 0; i < graph[parent_id].getAdjCt(); i++){
             for(int i = 0; i < vertex_num; i++){
                 if(graph[parent_id].getEdge(i) != INF && graph[parent_id].getEdge(i) != 0.0){
-                    int current_id = graph[parent_id].getCurrentAdj(i);
+                    //int current_id = graph[parent_id].getCurrentAdj(i);
+                    int current_id = i;
                     double length = graph[current_id].getEdge(parent_id);
                     if(ini_len + length < graph[current_id].current_edge){
                         graph[current_id].current_edge = ini_len + length;

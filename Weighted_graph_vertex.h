@@ -38,8 +38,8 @@ class Weighted_graph_vertex {
         int getId() const;
 		int getDegree() const;
 		double getEdge( int ) const;
-		int getCurrentAdj( int ) const;
-		int getAdjCt() const;
+		//int getCurrentAdj( int ) const;
+		//int getAdjCt() const;
 		bool getVisited() const;
 
 		void initialize( int, int );
