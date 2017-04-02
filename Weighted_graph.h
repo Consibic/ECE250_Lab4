@@ -89,11 +89,11 @@ double Weighted_graph::distance( int m, int n ) const{
     int* next_list = new int[vertex_num + 1];
     int current_next = 0, insert_pt = 1;
     next_list[0] = m;
+    graph[m].setVisited(true);
     next_list[1] = -1;
     graph[m].current_edge = ini_len;
     while((current_next < vertex_num) && (next_list[current_next] != -1)){
         parent_id = next_list[current_next];
-        graph[parent_id].setVisited(true);
         current_next += 1;
         ini_len = graph[parent_id].current_edge;
         if(graph[parent_id].getAdjCt() > 0){
@@ -105,6 +105,7 @@ double Weighted_graph::distance( int m, int n ) const{
                 }
                 if(!graph[current_id].getVisited()){
                     next_list[insert_pt] = current_id;
+                    graph[current_id].setVisited(true);
                     insert_pt += 1;
                     if(insert_pt < vertex_num)
                         next_list[insert_pt] = -1;
