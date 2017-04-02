@@ -85,20 +85,11 @@ double Weighted_graph::distance( int m, int n ) const{
     }
     if(m == n) return 0.0;
     int parent_id = m;
-    int next_id = m;
     double ini_len = 0.0;
-    bool next_set = false;
+    int* next_list = new int[vertex_num];
+    int current_next = 0, insert_pt = 0;
     graph[m].current_edge = ini_len;
     do{
-        next_set = false;
-        for(int i = 0; i < graph[parent_id].getAdjCt(); i++){
-            if(!graph[graph[parent_id].getCurrentAdj(i)].getVisited()){
-                next_id = graph[parent_id].getCurrentAdj(i);
-                next_set = true;
-                break;
-            }
-        }
-        //if(!next_set) break;
         ini_len = graph[parent_id].current_edge;
         if(graph[parent_id].getAdjCt() > 0){
             for(int i = 0; i < graph[parent_id].getAdjCt(); i++){
@@ -107,17 +98,25 @@ double Weighted_graph::distance( int m, int n ) const{
                 if(ini_len + length < graph[current_id].current_edge){
                     graph[current_id].current_edge = ini_len + length;
                 }
-                std::cout<<parent_id<<" "<<current_id<<" "<<ini_len<<std::endl;
+                if(!graph[current_id].getVisited()){
+                    next_list[insert_pt] = current_id;
+                    insert_pt += 1;
+                    if(insert_pt < vertex_num)
+                        next_list[insert_pt] = INF;
+                }
+                //std::cout<<parent_id<<" "<<current_id<<" "<<ini_len<<std::endl;
             }
         }
         graph[parent_id].setVisited(true);
-        parent_id = next_id;
-    }while(next_set);
+        parent_id = next_list[current_next];
+        current_next += 1;
+    }while(next_list[current_next - 1] != INF && current_next != vertex_num);
     double value = graph[n].current_edge;
     for(int i = 0; i < vertex_num; i++){
         graph[i].setVisited(false);
         graph[i].current_edge = INF;
     }
+    delete [] next_list;
     return value;
 }
 
