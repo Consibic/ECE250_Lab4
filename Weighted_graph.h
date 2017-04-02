@@ -107,7 +107,7 @@ double Weighted_graph::distance( int m, int n ) const{
                 if(ini_len + length < graph[current_id].current_edge){
                     graph[current_id].current_edge = ini_len + length;
                 }
-                //std::cout<<parent_id<<" "<<current_id<<" "<<ini_len<<std::endl;
+                std::cout<<parent_id<<" "<<current_id<<" "<<ini_len<<std::endl;
             }
         }
         graph[parent_id].setVisited(true);
