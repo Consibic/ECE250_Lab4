@@ -59,6 +59,7 @@ Weighted_graph::~Weighted_graph(){
         graph[i].Clear();
     }
     delete [] graph;
+    delete [] visited;
 }
 
 int Weighted_graph::degree( int n ) const{
