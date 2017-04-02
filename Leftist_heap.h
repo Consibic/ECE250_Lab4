@@ -30,6 +30,8 @@
 #define nullptr 0
 #endif
 
+#include "Exception.h"
+#include "ece250.h"
 #include "Leftist_node.h"
 
 template <typename Type>
