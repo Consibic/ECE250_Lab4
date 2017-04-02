@@ -1,5 +1,5 @@
 /*****************************************
- * UW User ID:
+ * UW User ID:  b9cheng
  * Submitted for ECE 250
  * Semester of Submission:  Winter 2017
  *
@@ -17,51 +17,23 @@
 
 #include <iostream>
 #include <limits>
-#include "Leftist_heap.h"
-#include "Exception.h"
 #include "ece250.h"
+#include "Exception.h"
+#include "Leftist_heap.h"
+#include "Leftist_node.h"
+#include "Weighted_graph_vertex.h"
 
 class Weighted_graph {
 	private:
-// Class Vertex supports 3 properties inside it: the id of the vertex, the v.d() distance and degree of vertex
-	class Vertex {
-	public:
-		int vertexID;
-		double vertexDistance;
-		int degree;
-
-// Constructor of the Vertex class/object
-		Vertex(int index, double distance) {
-				vertexID = index;
-				vertexDistance = distance;
-				degree = 0;
-
-			}
-// The comparison here are used in Leftist node heapify
-		friend bool operator>(const Vertex& v1, const Vertex& v2) {
-			return v1.vertexDistance > v2.vertexDistance;
-		}
-		friend bool operator<(const Vertex& v1, const Vertex& v2) {
-			return v1.vertexDistance < v2.vertexDistance;
-		}
-		friend bool operator>=(const Vertex& v1, const Vertex& v2) {
-			return v1.vertexDistance >= v2.vertexDistance;
-		}
-		friend bool operator<=(const Vertex& v1, const Vertex& v2) {
-			return v1.vertexDistance <= v2.vertexDistance;
-		}
-	};
-	private:
-		int edge_number;
-		int vertex_count;
-		double **adjacencyMatrix;
-		double *distanceArray;
-		Vertex **vertexArray;
-		Leftist_heap<Vertex> *distanceHeap;
 		static const double INF;
-// this flag is used since adding edges may change the strcuture of the graph
-		mutable bool flag;
-		bool *discovered;
+		int* degree_array;
+		double** graph;
+		bool* visited;
+		//double* current_edge;
+		int vertex_num;
+		int edge_num;
+        Leftist_heap<Weighted_graph_vertex> *heap;
+		mutable bool status;
 
 	public:
 		Weighted_graph( int = 50 );
@@ -74,201 +46,144 @@ class Weighted_graph {
 
 		void insert( int, int, double );
 
-	// Friends
-
 	friend std::ostream &operator<<( std::ostream &, Weighted_graph const & );
 };
 
 const double Weighted_graph::INF = std::numeric_limits<double>::infinity();
 
-// Constructor
-// adjacencyMatrix: a 2D array to store edge weight(uv=vu=w)
-// vertexArray: This array store Vertex objects, the purpose is to call vertext->property more convenient
-// distanceArray: An additional array for retriving the distance without modifying keys in the Priority Queue
-// distanceHeap: the priority queue needed in Dijkstra’s Algorithm
-// discovered: boolean array to check if the element is already visited
-Weighted_graph::Weighted_graph(int n){
-	vertex_count = std::max( 1, n );
-	edge_number = 0;
-
-	adjacencyMatrix = new double*[vertex_count];
-	vertexArray = new Vertex*[vertex_count];
-	distanceArray = new double[vertex_count];
-	distanceHeap = new Leftist_heap<Vertex>();
-	discovered = new bool[vertex_count];
-
-  	for (int i = 0; i < vertex_count; i++) {
-        adjacencyMatrix[i] = new double[vertex_count];
-        vertexArray[i] = new Vertex(i,INF);
-        distanceArray[i] = -1;
-        discovered[i] = false;
-
-        for (int j = 0; j < vertex_count; j++) {
-            if (j == i) {
-                adjacencyMatrix[i][j] = 0.0;
-            }
-            else {
-                adjacencyMatrix[i][j] = INF;
-            }
+Weighted_graph::Weighted_graph( int n ){
+    graph = new double*[n];
+    visited = new bool[n];
+    degree_array = new int[n];
+    heap = new Leftist_heap<Weighted_graph_vertex>();
+    //current_edge = new double[n];
+    edge_num = 0;
+    status = true;
+    for(int i = 0; i < n; i++){
+        graph[i] = new double[n];
+        //graph[i].initialize(i, n);
+        for(int j = 0; j < n; j++){
+            if(j == i) graph[i][j] = 0.0;
+            else graph[i][j] = INF;
         }
+        degree_array[i] = 0;
+        visited[i] = false;
+        //current_edge[i] = INF;
     }
-
+    vertex_num = n;
 }
 
-// Destructor: preventing memory leak
-Weighted_graph::~Weighted_graph() {
-    for (int i = 0; i < vertex_count; ++i) {
-        delete[] adjacencyMatrix[i];
-        delete vertexArray[i];
+Weighted_graph::~Weighted_graph(){
+    for(int i = 0; i < vertex_num; i++){
+        delete [] graph[i];
     }
-    delete[] vertexArray;
-    delete[] adjacencyMatrix;
-    delete distanceHeap;
-    delete[] distanceArray;
-    delete[] discovered;
+    delete [] graph;
+    delete [] visited;
+    delete [] degree_array;
+    //delete [] current_edge;
 }
 
-// Return the degree of vertex
-int Weighted_graph::degree(int n) const{
-	if(n < 0 || n > vertex_count-1){
-		throw illegal_argument();
-	}
-	return vertexArray[n]->degree;
+int Weighted_graph::degree( int n ) const{
+    return degree_array[n];
 }
 
-// Return total number of edges
 int Weighted_graph::edge_count() const{
-	return edge_number;
+    return edge_num;
 }
 
-// Return value of weight in the adjacencyMatrix
-double Weighted_graph::adjacent(int m,int n) const{
-	if(n < 0 || n > vertex_count-1 || m < 0 || m > vertex_count-1){
-		throw illegal_argument();
+double Weighted_graph::adjacent( int m, int n ) const{
+    if(m >= vertex_num || n >= vertex_num || m < 0 || n < 0){
+        illegal_argument ex;
+        throw ex;
+    }
+    double weight = graph[m][n];
+    //if(weight == 0.0 && m != n)
+    //    return INF;
+    return weight;
+}
+
+double Weighted_graph::distance( int m, int n ) const{
+    if(m >= vertex_num || n >= vertex_num || m < 0 || n < 0){
+        illegal_argument ex;
+        throw ex;
+    }
+    if(m == n) return 0.0;
+    double ini_len = 0.0;
+    double value = INF;
+    Weighted_graph_vertex *vertex = new Weighted_graph_vertex(m, ini_len);
+    heap->push(*vertex);
+    delete vertex;
+	if (status){
+		while(!heap->empty()){
+			Weighted_graph_vertex parent = heap->pop();
+			int parent_id = parent.getId();
+			visited[parent_id] = true;
+			for (int i = 0; i < vertex_num; i++){
+                ini_len = graph[m][parent_id];
+				double length = graph[parent_id][i];
+				if (length != INF && length != 0 && !visited[i]){
+                    if (ini_len + length < graph[i][m]){
+                        graph[m][i] = ini_len + length;
+                        graph[i][m] = ini_len + length;
+                    }
+                        Weighted_graph_vertex *next = new Weighted_graph_vertex(i, graph[m][i]);
+                        heap->push(*next);
+                        delete next;
+
+                }
+			}
+			if (parent_id == n){
+				value = graph[parent_id][m];
+				break;
+			}
+		}
 	}
 	else{
-		return adjacencyMatrix[m][n];
-	}
-}
-
-// Four cases involved
-double Weighted_graph::distance(int m,int n) const{
-// First case: for illegal input
-	if(n < 0 || n > vertex_count-1 || m < 0 || m > vertex_count-1){
-		throw illegal_argument();
-	}
-// Second case: distance to a node itself is 0
-	else if (m == n){
-		return 0.0;
-	}
-// Third Case: normal case. If the node has not been visited, then set up a new min-heap.
-// Push and pop one element at a time, and apply relaxation algorithm to update distance array.
-// After the update, return the distance value in the destination element
-	else if (distanceArray[m] != 0.0 || flag == true){
-		double output = INF;
-		for(int i = 0; i < vertex_count; i++){
-			discovered[i] = false;
-			if (i == m){
-				distanceArray[i] = 0.0;
-			}
-			else{
-				distanceArray[i] = INF;
-			}
-		}
-		distanceHeap->clear();
-		Vertex *first = new Vertex(m,0.0);
-		distanceHeap->push(*first);
-		delete first;
-
-		while(!distanceHeap->empty()){
-			Vertex root = distanceHeap->pop();
-			discovered[root.vertexID]= true;
-			for (int i = 0; i < vertex_count; i++){
-				double weightBetweenNodes = adjacencyMatrix[root.vertexID][i];
-				double rootToSource = distanceArray[root.vertexID];
-
-				if (weightBetweenNodes == INF && weightBetweenNodes == 0 && discovered[i] == true){
-					continue;
-				}
-				// Relax edges
-				if (distanceArray[i] > rootToSource + weightBetweenNodes){
-					distanceArray[i] = rootToSource + weightBetweenNodes;
-					Vertex *next = new Vertex(i,distanceArray[i]);
-					distanceHeap->push(*next);
-					delete next;
+        while(!heap->empty()){
+			Weighted_graph_vertex parent = heap->pop();
+			int parent_id = parent.getId();
+			visited[parent_id] = false;
+			for (int i = 0; i < vertex_num; i++){
+                ini_len = graph[m][parent_id];
+				double length = graph[parent_id][i];
+				if (length != INF && length != 0 && visited[i]){
+                    if (ini_len + length < graph[i][m]){
+                        graph[m][i] = ini_len + length;
+                        graph[i][m] = ini_len + length;
+                    }
+                        Weighted_graph_vertex *next = new Weighted_graph_vertex(i, graph[m][i]);
+                        heap->push(*next);
+                        delete next;
 				}
 			}
-			if (root.vertexID == n){
-				output = distanceArray[root.vertexID];
+			if (parent_id == n){
+				value = graph[parent_id][m];
 				break;
 			}
-		}
-		flag = false;
-		return output;
-	}
-
-// Last Case: This case aims specially for some cases where one test case uses the same start point, it's only for speeding purpose.
-// The heap is setup already. Push and pop one element at a time, and apply relaxation algorithm to update distance array.
-// After the update, return the distance value in the destination element
-	else if (distanceArray[m] == 0.0 && flag == false){
-		if (discovered[n] == true){
-			return distanceArray[n];
-		}
-		else if (discovered[n] == false){
-			double output = INF;
-
-		while(!distanceHeap->empty()){
-			Vertex root = distanceHeap->pop();
-			discovered[root.vertexID]= true;
-			for (int i = 0; i < vertex_count; i++){
-				double weightBetweenNodes = adjacencyMatrix[root.vertexID][i];
-				double rootToSource = distanceArray[root.vertexID];
-
-				if (weightBetweenNodes == INF && weightBetweenNodes == 0){
-					continue;
-				}
-				// Relax edges
-				if (distanceArray[i] > rootToSource + weightBetweenNodes){
-					distanceArray[i] = rootToSource + weightBetweenNodes;
-					Vertex *next = new Vertex(i,distanceArray[i]);
-					distanceHeap->push(*next);
-					delete next;
-				}
-			}
-			if (root.vertexID == n){
-				output = distanceArray[root.vertexID];
-				break;
-			}
-		}
-		return output;
+			//std::cout<<" "<<parent_id<<" "<<graph[parent_id][m]<<std::endl;
 		}
 	}
-
+    status = !status;
+	delete heap;
+    return value;
 }
 
-// Upsert edge
-void Weighted_graph::insert(int m,int n,double w){
-	if(w <= 0 || m == n || n < 0 || n > vertex_count-1 || m < 0 || m > vertex_count-1){
-		throw illegal_argument();
-	}
-
-		if(adjacencyMatrix[m][n] == INF){
-		edge_number ++;
-		vertexArray[m]->degree +=1;
-		vertexArray[n]->degree +=1;
-
-	}
-		adjacencyMatrix[m][n] = adjacencyMatrix[n][m] = w;
-		flag = true;
+void Weighted_graph::insert( int m, int n, double w ){
+    if(w <= 0 || m >= vertex_num || n >= vertex_num || m < 0 || n < 0 || m == n){
+        illegal_argument ex;
+        throw ex;
+    }
+    if(graph[m][n] == INF){
+        edge_num += 1;
+        degree_array[m] += 1;
+        degree_array[n] += 1;
+    }
+    graph[m][n] = w;
+    graph[n][m] = w;
 }
-
-// You can modify this function however you want:  it will not be tested
 
 std::ostream &operator<<( std::ostream &out, Weighted_graph const &graph ) {
 	return out;
 }
-
-// Is an error showing up in ece250.h or elsewhere?
-// Did you forget a closing '}' ?
 
 #endif
