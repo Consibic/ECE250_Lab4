@@ -17,12 +17,13 @@
 
 #include <iostream>
 #include <limits>
-#include "Weighted_graph_vertex.h"
+//#include "Weighted_graph_vertex.h"
 
 class Weighted_graph {
 	private:
 		static const double INF;
-		Weighted_graph_vertex* graph;
+		int* degree_array;
+		double** graph;
 		bool* visited;
 		//double* current_edge;
 		int vertex_num;
@@ -46,13 +47,19 @@ class Weighted_graph {
 const double Weighted_graph::INF = std::numeric_limits<double>::infinity();
 
 Weighted_graph::Weighted_graph( int n ){
-    graph = new Weighted_graph_vertex[n];
+    graph = new double*[n];
     visited = new bool[n];
+    degree_array = new int[n];
     //current_edge = new double[n];
     edge_num = 0;
     status = true;
     for(int i = 0; i < n; i++){
-        graph[i].initialize(i, n);
+        //graph[i].initialize(i, n);
+        for(int j = 0; j < n; j++){
+            if(j == 1) graph[i][j] = 0.0;
+            else graph[i][j] = INF;
+        }
+        degree_array[i] = 0;
         visited[i] = false;
         //current_edge[i] = INF;
     }
@@ -61,15 +68,16 @@ Weighted_graph::Weighted_graph( int n ){
 
 Weighted_graph::~Weighted_graph(){
     for(int i = 0; i < vertex_num; i++){
-        graph[i].Clear();
+        delete [] graph[i];
     }
     delete [] graph;
     delete [] visited;
+    delete [] degree_array;
     //delete [] current_edge;
 }
 
 int Weighted_graph::degree( int n ) const{
-    return graph[n].getDegree();
+    return degree_array[n];
 }
 
 int Weighted_graph::edge_count() const{
@@ -81,7 +89,7 @@ double Weighted_graph::adjacent( int m, int n ) const{
         illegal_argument ex;
         throw ex;
     }
-    double weight = graph[m].getEdge(n);
+    double weight = graph[m][n];
     //if(weight == 0.0 && m != n)
     //    return INF;
     return weight;
@@ -106,15 +114,15 @@ double Weighted_graph::distance( int m, int n ) const{
         while((current_next < vertex_num) && (next_list[current_next] != -1)){
         parent_id = next_list[current_next];
         current_next += 1;
-        ini_len = graph[parent_id].getEdge(m);
+        ini_len = graph[parent_id][m];
         //if(graph[parent_id].getAdjCt() > 0){
             //for(int i = 0; i < graph[parent_id].getAdjCt(); i++){
             for(int i = 0; i < vertex_num; i++){
-                if(graph[parent_id].getEdge(i) != INF && graph[parent_id].getEdge(i) != 0.0){
+                if(graph[parent_id][i] != INF && graph[parent_id][i] != 0.0){
                     //int current_id = graph[parent_id].getCurrentAdj(i);
-                    double length = graph[i].getEdge(parent_id);
-                    if(ini_len + length < graph[i].getEdge(m)){
-                        graph[i].addEdge(m, ini_len + length);
+                    double length = graph[i][parent_id];
+                    if(ini_len + length < graph[i][m]){
+                        graph[i][m] = ini_len + length;
                     }
                     if(!visited[i]){
                         next_list[insert_pt] = i;
@@ -133,15 +141,15 @@ double Weighted_graph::distance( int m, int n ) const{
         while((current_next < vertex_num) && (next_list[current_next] != -1)){
         parent_id = next_list[current_next];
         current_next += 1;
-        ini_len = graph[parent_id].getEdge(m);
+        ini_len = graph[parent_id][m];
         //if(graph[parent_id].getAdjCt() > 0){
             //for(int i = 0; i < graph[parent_id].getAdjCt(); i++){
             for(int i = 0; i < vertex_num; i++){
-                if(graph[parent_id].getEdge(i) != INF && graph[parent_id].getEdge(i) != 0.0){
+                if(graph[parent_id][i] != INF && graph[parent_id][i] != 0.0){
                     //int current_id = graph[parent_id].getCurrentAdj(i);
-                    double length = graph[i].getEdge(parent_id);
-                    if(ini_len + length < graph[i].getEdge(m)){
-                        graph[i].addEdge(m, ini_len + length);
+                    double length = graph[i][parent_id];
+                    if(ini_len + length < graph[i][m]){
+                        graph[i][m] = ini_len + length;
                     }
                     if(visited[i]){
                         next_list[insert_pt] = i;
@@ -158,7 +166,7 @@ double Weighted_graph::distance( int m, int n ) const{
     }
 
     delete [] next_list;
-    double value = graph[n].getEdge(m);
+    double value = graph[n][m];
     status = !status;
     //for(int i = 0; i < vertex_num; i++){
     //    //graph[i].setVisited(false);
@@ -173,10 +181,13 @@ void Weighted_graph::insert( int m, int n, double w ){
         illegal_argument ex;
         throw ex;
     }
-    if(graph[m].getEdge(n) == INF)
+    if(graph[m][n] == INF){
         edge_num += 1;
-    graph[m].addEdge(n, w);
-    graph[n].addEdge(m, w);
+        degree_array[m] += 1;
+        degree_array[n] += 1;
+    }
+    graph[m][n] = w;
+    graph[n][m] = w;
 }
 
 std::ostream &operator<<( std::ostream &out, Weighted_graph const &graph ) {
