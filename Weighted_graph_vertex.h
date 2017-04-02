@@ -40,7 +40,7 @@ class Weighted_graph_vertex {
 		double getEdge( int ) const;
 		//int getCurrentAdj( int ) const;
 		//int getAdjCt() const;
-		bool getVisited() const;
+		//bool getVisited() const;
 
 		void initialize( int, int );
 		void addEdge( int, double );

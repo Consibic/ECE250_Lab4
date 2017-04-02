@@ -47,6 +47,7 @@ const double Weighted_graph::INF = std::numeric_limits<double>::infinity();
 Weighted_graph::Weighted_graph( int n ){
     graph = new Weighted_graph_vertex[n];
     visited = new bool[n];
+    current_edge = new double[n];
     edge_num = 0;
     for(int i = 0; i < n; i++){
         graph[i].initialize(i, n);
@@ -108,13 +109,12 @@ double Weighted_graph::distance( int m, int n ) const{
             for(int i = 0; i < vertex_num; i++){
                 if(graph[parent_id].getEdge(i) != INF && graph[parent_id].getEdge(i) != 0.0){
                     //int current_id = graph[parent_id].getCurrentAdj(i);
-                    int current_id = i;
-                    double length = graph[current_id].getEdge(parent_id);
-                    if(ini_len + length < current_edge[current_id]){
-                        current_edge[current_id] = ini_len + length;
+                    double length = graph[i].getEdge(parent_id);
+                    if(ini_len + length < current_edge[i]){
+                        current_edge[i] = ini_len + length;
                     }
-                    if(!visited[current_id]){
-                        next_list[insert_pt] = current_id;
+                    if(!visited[i]){
+                        next_list[insert_pt] = i;
                         //graph[current_id].setVisited(true);
                         visited[i] = true;
                         insert_pt += 1;
