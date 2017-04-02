@@ -127,10 +127,10 @@ double Weighted_graph::distance( int m, int n ) const{
     }
     delete [] next_list;
     double value = current_edge[n];
-    for(int i = 0; i < vertex_num; i++){
+    for(int i = 0; i < current_next; i++){
         //graph[i].setVisited(false);
-        visited[i] = false;
-        current_edge[i] = INF;
+        visited[next_list[i]] = false;
+        current_edge[next_list[i]] = INF;
     }
     return value;
 }
