@@ -113,7 +113,7 @@ double Weighted_graph::distance( int m, int n ) const{
                 //std::cout<<parent_id<<" "<<current_id<<" "<<ini_len<<std::endl;
             }
         }
-    std::cout<<"reached "<<current_next<<std::endl;
+    std::cout<<"reached "<<current_next<<" "<<vertex_num<<std::endl;
     }
     delete [] next_list;
     double value = graph[n].current_edge;
