@@ -54,9 +54,9 @@ Weighted_graph::Weighted_graph( int n ){
     edge_num = 0;
     status = true;
     for(int i = 0; i < n; i++){
+        graph[i] = new double[n];
         //graph[i].initialize(i, n);
         for(int j = 0; j < n; j++){
-            graph[i] = new double[n];
             if(j == i) graph[i][j] = 0.0;
             else graph[i][j] = INF;
         }
@@ -112,7 +112,7 @@ double Weighted_graph::distance( int m, int n ) const{
     next_list[1] = -1;
     //current_edge[m] = ini_len;
     if(status){
-        std::cout<<"Reached"<<std::endl;
+        //std::cout<<"Reached"<<std::endl;
         while((current_next < vertex_num) && (next_list[current_next] != -1)){
         parent_id = next_list[current_next];
         current_next += 1;
