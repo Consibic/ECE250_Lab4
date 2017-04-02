@@ -151,6 +151,7 @@ double Weighted_graph::distance( int m, int n ) const{
                     double length = graph[i][parent_id];
                     if(ini_len + length < graph[i][m]){
                         graph[i][m] = ini_len + length;
+                        graph[m][i] = ini_len + length;
                     }
                     if(visited[i]){
                         next_list[insert_pt] = i;
