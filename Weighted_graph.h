@@ -56,6 +56,7 @@ Weighted_graph::Weighted_graph( int n ){
     for(int i = 0; i < n; i++){
         //graph[i].initialize(i, n);
         for(int j = 0; j < n; j++){
+            graph[i] = new double[n];
             if(j == 1) graph[i][j] = 0.0;
             else graph[i][j] = INF;
         }
