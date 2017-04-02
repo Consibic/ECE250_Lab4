@@ -113,7 +113,7 @@ double Weighted_graph::distance( int m, int n ) const{
         graph[parent_id].setVisited(true);
         parent_id = next_id;
     }while(next_set);
-    int value = graph[n].current_edge;
+    double value = graph[n].current_edge;
     for(int i = 0; i < vertex_num; i++){
         graph[i].setVisited(false);
         graph[i].current_edge = INF;
