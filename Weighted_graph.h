@@ -18,7 +18,6 @@
 #include <iostream>
 #include <limits>
 #include "Weighted_graph_vertex.h"
-#include "Leftist_heap.h"
 
 class Weighted_graph {
 	private:
