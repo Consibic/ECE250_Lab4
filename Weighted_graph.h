@@ -112,6 +112,7 @@ double Weighted_graph::distance( int m, int n ) const{
     next_list[1] = -1;
     //current_edge[m] = ini_len;
     if(status){
+        std::cout<<"Reached"<<std::endl;
         while((current_next < vertex_num) && (next_list[current_next] != -1)){
         parent_id = next_list[current_next];
         current_next += 1;
@@ -121,7 +122,7 @@ double Weighted_graph::distance( int m, int n ) const{
             for(int i = 0; i < vertex_num; i++){
                 if(graph[parent_id][i] != INF && graph[parent_id][i] != 0.0){
                     //int current_id = graph[parent_id].getCurrentAdj(i);
-                    double length = graph[i][parent_id];
+                    double length = graph[parent_id][i];
                     if(ini_len + length < graph[i][m]){
                         graph[i][m] = ini_len + length;
                         graph[m][i] = ini_len + length;
@@ -149,7 +150,7 @@ double Weighted_graph::distance( int m, int n ) const{
             for(int i = 0; i < vertex_num; i++){
                 if(graph[parent_id][i] != INF && graph[parent_id][i] != 0.0){
                     //int current_id = graph[parent_id].getCurrentAdj(i);
-                    double length = graph[i][parent_id];
+                    double length = graph[parent_id][i];
                     if(ini_len + length < graph[i][m]){
                         graph[i][m] = ini_len + length;
                         graph[m][i] = ini_len + length;
@@ -167,7 +168,6 @@ double Weighted_graph::distance( int m, int n ) const{
         //}
         }
     }
-
     delete [] next_list;
     double value = graph[n][m];
     status = !status;
