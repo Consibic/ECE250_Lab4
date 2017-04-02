@@ -95,22 +95,25 @@ double Weighted_graph::distance( int m, int n ) const{
         parent_id = next_list[current_next];
         current_next += 1;
         ini_len = graph[parent_id].current_edge;
-        if(graph[parent_id].getAdjCt() > 0){
-            for(int i = 0; i < graph[parent_id].getAdjCt(); i++){
-                int current_id = graph[parent_id].getCurrentAdj(i);
-                double length = graph[current_id].getEdge(parent_id);
-                if(ini_len + length < graph[current_id].current_edge){
-                    graph[current_id].current_edge = ini_len + length;
-                }
-                if(!graph[current_id].getVisited()){
-                    next_list[insert_pt] = current_id;
-                    graph[current_id].setVisited(true);
-                    insert_pt += 1;
-                    if(insert_pt < vertex_num)
-                        next_list[insert_pt] = -1;
+        //if(graph[parent_id].getAdjCt() > 0){
+            //for(int i = 0; i < graph[parent_id].getAdjCt(); i++){
+            for(int i = 0; i < vertex_num; i++){
+                if(graph[parent_id].getEdge(i) != INF && graph[parent_id].getEdge(i) != 0.0){
+                    int current_id = graph[parent_id].getCurrentAdj(i);
+                    double length = graph[current_id].getEdge(parent_id);
+                    if(ini_len + length < graph[current_id].current_edge){
+                        graph[current_id].current_edge = ini_len + length;
+                    }
+                    if(!graph[current_id].getVisited()){
+                        next_list[insert_pt] = current_id;
+                        graph[current_id].setVisited(true);
+                        insert_pt += 1;
+                        if(insert_pt < vertex_num)
+                            next_list[insert_pt] = -1;
+                    }
                 }
             }
-        }
+        //}
     }
     delete [] next_list;
     double value = graph[n].current_edge;
