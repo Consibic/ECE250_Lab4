@@ -124,10 +124,10 @@ double Weighted_graph::distance( int m, int n ) const{
                     if (ini_len + length < graph[i][m]){
                         graph[m][i] = ini_len + length;
                         graph[i][m] = ini_len + length;
-                        Weighted_graph_vertex *next = new Weighted_graph_vertex(i, graph[m][i]);
-                        heap->push(*next);
-                        delete next;
                     }
+                    Weighted_graph_vertex *next = new Weighted_graph_vertex(i, graph[m][i]);
+                    heap->push(*next);
+                    delete next;
 				}
 			}
 			if (parent_id == n){
@@ -148,17 +148,17 @@ double Weighted_graph::distance( int m, int n ) const{
                     if (ini_len + length < graph[i][m]){
                         graph[m][i] = ini_len + length;
                         graph[i][m] = ini_len + length;
-                        Weighted_graph_vertex *next = new Weighted_graph_vertex(i, graph[m][i]);
-                        heap->push(*next);
-                        delete next;
                     }
+                    Weighted_graph_vertex *next = new Weighted_graph_vertex(i, graph[m][i]);
+                    heap->push(*next);
+                    delete next;
 				}
 			}
 			if (parent_id == n){
 				value = graph[parent_id][m];
 				break;
 			}
-			std::cout<<parent_id<<" "<<graph[parent_id][m]<<std::endl;
+			std::cout<<" "<<parent_id<<" "<<graph[parent_id][m]<<std::endl;
 		}
 	}
     status = !status;
