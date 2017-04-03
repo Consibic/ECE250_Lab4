@@ -136,10 +136,10 @@ double Weighted_graph::distance( int m, int n ) const{
 			visited[parent_id]= true;
 			for (int i = 0; i < vertex_num; i++){
 				double length = graph[parent_id][i];
-				double rootToSource = current_edge[parent_id];
+				ini_len = current_edge[parent_id];
 				if (length != INF || length != 0 || !visited[i]){
-					if (current_edge[i] > rootToSource + length){
-                        current_edge[i] = rootToSource + length;
+					if (ini_len + length < current_edge[i]){
+                        current_edge[i] = ini_len + length;
                         Weighted_graph_vertex *next = new Weighted_graph_vertex(i, current_edge[i]);
                         heap->push(*next);
                         delete next;
@@ -164,10 +164,10 @@ double Weighted_graph::distance( int m, int n ) const{
                 visited[parent_id] = true;
                 for (int i = 0; i < vertex_num; i++){
                     double length = graph[parent_id][i];
-                    double rootToSource = current_edge[parent_id];
+                    ini_len = current_edge[parent_id];
                     if (length != INF || length != 0){
-                        if (current_edge[i] > rootToSource + length){
-                            current_edge[i] = rootToSource + length;
+                        if (ini_len + length < current_edge[i]){
+                            current_edge[i] = ini_len + length;
                             Weighted_graph_vertex *next = new Weighted_graph_vertex(i, current_edge[i]);
                             heap->push(*next);
                             delete next;
