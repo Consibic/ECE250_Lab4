@@ -60,7 +60,7 @@ Weighted_graph::Weighted_graph( int n ){
     current_edge = new double[n];
     edge_num = 0;
     status = true;
-    modified = true;
+    //modified = true;
     for(int i = 0; i < n; i++){
         graph[i] = new double[n];
         for(int j = 0; j < n; j++){
@@ -200,6 +200,7 @@ void Weighted_graph::insert( int m, int n, double w ){
     }
     graph[m][n] = w;
     graph[n][m] = w;
+    modified = true;
 }
 
 std::ostream &operator<<( std::ostream &out, Weighted_graph const &graph ) {
