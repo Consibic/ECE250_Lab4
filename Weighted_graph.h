@@ -152,6 +152,7 @@ double Weighted_graph::distance( int m, int n ) const{
 			}
 		}
 		modified = false;
+		return value;
 	}
 	else if (current_edge[m] == 0.0 && modified == false){
 		if (visited[n] == true){
@@ -178,6 +179,7 @@ double Weighted_graph::distance( int m, int n ) const{
                     value = current_edge[parent_id];
                     break;
                 }
+                return value;
             }
 		}
 	}
