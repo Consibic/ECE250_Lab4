@@ -19,7 +19,9 @@
 #include <limits>
 #include "ece250.h"
 #include "Exception.h"
-//#include "Weighted_graph_vertex.h"
+#include "Leftist_heap.h"
+#include "Leftist_node.h"
+#include "Weighted_graph_vertex.h"
 
 class Weighted_graph {
 	private:
@@ -27,10 +29,12 @@ class Weighted_graph {
 		int* degree_array;
 		double** graph;
 		bool* visited;
-		//double* current_edge;
+		double* current_edge;
 		int vertex_num;
 		int edge_num;
+        Leftist_heap<Weighted_graph_vertex> *heap;
 		mutable bool status;
+        mutable bool modified;
 
 	public:
 		Weighted_graph( int = 50 );
@@ -52,19 +56,20 @@ Weighted_graph::Weighted_graph( int n ){
     graph = new double*[n];
     visited = new bool[n];
     degree_array = new int[n];
-    //current_edge = new double[n];
+    heap = new Leftist_heap<Weighted_graph_vertex>();
+    current_edge = new double[n];
     edge_num = 0;
     status = true;
+    modified = true;
     for(int i = 0; i < n; i++){
         graph[i] = new double[n];
-        //graph[i].initialize(i, n);
         for(int j = 0; j < n; j++){
             if(j == i) graph[i][j] = 0.0;
             else graph[i][j] = INF;
         }
         degree_array[i] = 0;
         visited[i] = false;
-        //current_edge[i] = INF;
+        current_edge[i] = INF;
     }
     vertex_num = n;
 }
@@ -76,7 +81,9 @@ Weighted_graph::~Weighted_graph(){
     delete [] graph;
     delete [] visited;
     delete [] degree_array;
-    //delete [] current_edge;
+    heap->clear();
+	delete heap;
+    delete [] current_edge;
 }
 
 int Weighted_graph::degree( int n ) const{
@@ -104,70 +111,80 @@ double Weighted_graph::distance( int m, int n ) const{
         throw ex;
     }
     if(m == n) return 0.0;
-    int parent_id = m;
-    double ini_len = 0.0;
-    int* next_list = new int[vertex_num + 1];
-    int current_next = 0, insert_pt = 1;
-    next_list[0] = m;
-    //graph[m].setVisited(true);
-    visited[m] = status;
-    next_list[1] = -1;
-    //current_edge[m] = ini_len;
-    if(status){
-        //std::cout<<"Reached"<<std::endl;
-        while((current_next < vertex_num) && (next_list[current_next] != -1)){
-            parent_id = next_list[current_next];
-            current_next += 1;
-            ini_len = graph[parent_id][m];
-            for(int i = 0; i < vertex_num; i++){
-                if(graph[parent_id][i] != INF && graph[parent_id][i] != 0.0){
-                    double length = graph[parent_id][i];
-                    if(ini_len + length < graph[i][m]){
-                        graph[i][m] = ini_len + length;
-                        graph[m][i] = ini_len + length;
-                    }
-                    if(!visited[i]){
-                        next_list[insert_pt] = i;
-                        visited[i] = true;
-                        insert_pt += 1;
-                        if(insert_pt < vertex_num)
-                            next_list[insert_pt] = -1;
-                    }
-                }
-            }
-        }
-    }
-    else{
-        while((current_next < vertex_num) && (next_list[current_next] != -1)){
-            parent_id = next_list[current_next];
-            current_next += 1;
-            ini_len = graph[parent_id][m];
-            for(int i = 0; i < vertex_num; i++){
-                if(graph[parent_id][i] != INF && graph[parent_id][i] != 0.0){
-                    double length = graph[parent_id][i];
-                    if(ini_len + length < graph[i][m]){
-                        graph[i][m] = ini_len + length;
-                        graph[m][i] = ini_len + length;
-                    }
-                    if(visited[i]){
-                        next_list[insert_pt] = i;
-                        visited[i] = false;
-                        insert_pt += 1;
-                        if(insert_pt < vertex_num)
-                            next_list[insert_pt] = -1;
-                    }
-                }
-            }
-        }
-    }
-    delete [] next_list;
-    double value = graph[n][m];
-    status = !status;
-    //for(int i = 0; i < vertex_num; i++){
-    //    //graph[i].setVisited(false);
-    //    visited[i] = false;
-    //    //current_edge[i] = INF;
-    //}
+    double value = INF;
+	if (current_edge[m] != 0.0 || modified == true){
+		for(int i = 0; i < vertex_num; i++){
+			visited[i] = false;
+			if (i == m){
+				current_edge[i] = 0.0;
+			}
+			else{
+				current_edge[i] = INF;
+			}
+		}
+		heap->clear();
+		Weighted_graph_vertex *first = new Weighted_graph_vertex(m,0.0);
+		heap->push(*first);
+		delete first;
+
+		while(!heap->empty()){
+			Weighted_graph_vertex parent = heap->pop();
+			visited[parent.getId()]= true;
+			for (int i = 0; i < vertex_num; i++){
+				double weightBetweenNodes = graph[parent.getId()][i];
+				double rootToSource = current_edge[parent.getId()];
+
+				if (weightBetweenNodes == INF && weightBetweenNodes == 0 && visited[i] == true){
+					continue;
+				}
+				if (current_edge[i] > rootToSource + weightBetweenNodes){
+					current_edge[i] = rootToSource + weightBetweenNodes;
+					Weighted_graph_vertex *next = new Weighted_graph_vertex(i, current_edge[i]);
+					heap->push(*next);
+					delete next;
+				}
+			}
+			if (parent.getId() == n){
+				value = current_edge[parent.getId()];
+				break;
+			}
+		}
+		modified = false;
+		return value;
+	}
+	else if (current_edge[m] == 0.0 && modified == false){
+		if (visited[n] == true){
+			return current_edge[n];
+		}
+		else if (visited[n] == false){
+			double output = INF;
+
+		while(!heap->empty()){
+			Weighted_graph_vertex parent = heap->pop();
+			visited[parent.getId()] = true;
+			for (int i = 0; i < vertex_num; i++){
+				double weightBetweenNodes = graph[parent.getId()][i];
+				double rootToSource = current_edge[parent.getId()];
+
+				if (weightBetweenNodes == INF && weightBetweenNodes == 0){
+					continue;
+				}
+				if (current_edge[i] > rootToSource + weightBetweenNodes){
+					current_edge[i] = rootToSource + weightBetweenNodes;
+					Weighted_graph_vertex *next = new Weighted_graph_vertex(i, current_edge[i]);
+					heap->push(*next);
+					delete next;
+				}
+			}
+			if (parent.getId() == n){
+				value = current_edge[parent.getId()];
+				break;
+			}
+		}
+		return value;
+		}
+	}
+    //heap->clear();
     return value;
 }
 
