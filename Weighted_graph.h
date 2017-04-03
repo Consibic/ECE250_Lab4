@@ -115,7 +115,7 @@ double Weighted_graph::distance( int m, int n ) const{
     if(m == n) return 0.0;
     double value = INF;
     int ini_len = 0.0;
-	if (current_edge[m] != 0.0 || modified == true){
+	if (current_edge[m] != 0.0 || modified){
 		for(int i = 0; i < vertex_num; i++){
 			visited[i] = false;
 			if (i == m){
@@ -137,14 +137,14 @@ double Weighted_graph::distance( int m, int n ) const{
 			for (int i = 0; i < vertex_num; i++){
 				ini_len = current_edge[parent_id];
                 double length = graph[parent_id][i];
-				if (length != INF || length != 0 || !visited[i]){
-                    if (current_edge[i] > ini_len + length){
+				if (length == INF && length == 0 && visited[i]){
+
+                }if (current_edge[i] > ini_len + length){
                         current_edge[i] = ini_len + length;
                         Weighted_graph_vertex *next = new Weighted_graph_vertex(i, current_edge[i]);
                         heap->push(*next);
                         delete next;
                     }
-                }
 			}
 			if (parent_id == n){
 				value = current_edge[parent_id];
@@ -152,7 +152,6 @@ double Weighted_graph::distance( int m, int n ) const{
 			}
 		}
 		modified = false;
-		return value;
 	}
 	else if (current_edge[m] == 0.0 && modified == false){
 		if (visited[n] == true){
@@ -166,20 +165,19 @@ double Weighted_graph::distance( int m, int n ) const{
                 for (int i = 0; i < vertex_num; i++){
                     ini_len = current_edge[parent_id];
                     double length = graph[parent_id][i];
-                    if (length != INF || length != 0){
-                        if (ini_len + length < current_edge[i]){
+                    if (length == INF && length == 0){
+                        continue;
+                    }if (ini_len + length < current_edge[i]){
                             current_edge[i] = ini_len + length;
                             Weighted_graph_vertex *next = new Weighted_graph_vertex(i, current_edge[i]);
                             heap->push(*next);
                             delete next;
                         }
-                    }
                 }
                 if (parent_id == n){
                     value = current_edge[parent_id];
                     break;
                 }
-                return value;
             }
 		}
 	}
