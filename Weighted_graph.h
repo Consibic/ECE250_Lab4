@@ -138,7 +138,7 @@ double Weighted_graph::distance( int m, int n ) const{
 				ini_len = current_edge[parent_id];
                 double length = graph[parent_id][i];
 				if (length == INF && length == 0 && visited[i]){
-
+                    continue;
                 }if (current_edge[i] > ini_len + length){
                         current_edge[i] = ini_len + length;
                         Weighted_graph_vertex *next = new Weighted_graph_vertex(i, current_edge[i]);
