@@ -28,7 +28,7 @@ class Weighted_graph {
 		static const double INF;
 		int* degree_array;
 		double** graph;
-		bool* visited;
+		int* visited;
 		double* current_edge;
 		int vertex_num;
 		int edge_num;
@@ -55,7 +55,7 @@ const double Weighted_graph::INF = std::numeric_limits<double>::infinity();
 
 Weighted_graph::Weighted_graph( int n ){
     graph = new double*[n];
-    visited = new bool[n];
+    visited = new int[n];
     degree_array = new int[n];
     heap = new Leftist_heap<Weighted_graph_vertex>();
     current_edge = new double[n];
@@ -117,7 +117,7 @@ double Weighted_graph::distance( int m, int n ) const{
     int ini_len = 0.0;
 	if (current_edge[m] != 0.0 || modified == true){
 		for(int i = 0; i < vertex_num; i++){
-			visited[i] = false;
+			//visited[i] = false;
 			if (i == m){
 				current_edge[i] = ini_len;
 			}
@@ -133,11 +133,11 @@ double Weighted_graph::distance( int m, int n ) const{
 		while(!heap->empty()){
 			Weighted_graph_vertex parent = heap->pop();
 			int parent_id = parent.getId();
-			visited[parent_id]= true;
+			visited[parent_id]= visit_count;
 			for (int i = 0; i < vertex_num; i++){
 				double length = graph[parent_id][i];
 				double ini = current_edge[parent_id];
-				if (length != INF || length != 0 || !visited[i]){
+				if (length != INF || length != 0 || visited[i] != visit_count){
 					if (ini + length < current_edge[i]){
                         current_edge[i] = ini + length;
                         Weighted_graph_vertex *next = new Weighted_graph_vertex(i, current_edge[i]);
@@ -154,14 +154,14 @@ double Weighted_graph::distance( int m, int n ) const{
 		modified = false;
 	}
 	else if (current_edge[m] == 0.0 && modified == false){
-		if (visited[n] == true){
-			return current_edge[n];
-		}
-		else if (visited[n] == false){
+		//if (visited[n] == true){
+		//	return current_edge[n];
+		//}
+		//else if (visited[n] == false){
             while(!heap->empty()){
                 Weighted_graph_vertex parent = heap->pop();
                 int parent_id = parent.getId();
-                visited[parent_id] = true;
+                visited[parent_id] = visit_count;
                 for (int i = 0; i < vertex_num; i++){
                     double length = graph[parent_id][i];
                     double ini = current_edge[parent_id];
@@ -179,7 +179,7 @@ double Weighted_graph::distance( int m, int n ) const{
                     break;
                 }
             }
-		}
+		//}
 	}
     //heap->clear();
     return value;
