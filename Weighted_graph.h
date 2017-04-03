@@ -153,11 +153,11 @@ double Weighted_graph::distance( int m, int n ) const{
 		}
 		modified = false;
 	}
-	else if (current_edge[m] == 0.0 && modified == false){
-		//if (visited[n] == true){
-		//	return current_edge[n];
-		//}
-		//else if (visited[n] == false){
+	else{
+		if (visited[n] == visit_count - 1){
+			return current_edge[n];
+		}
+		else{
             while(!heap->empty()){
                 Weighted_graph_vertex parent = heap->pop();
                 int parent_id = parent.getId();
@@ -179,7 +179,7 @@ double Weighted_graph::distance( int m, int n ) const{
                     break;
                 }
             }
-		//}
+		}
 	}
     //heap->clear();
     return value;
