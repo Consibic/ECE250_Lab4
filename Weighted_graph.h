@@ -136,7 +136,7 @@ double Weighted_graph::distance( int m, int n ) const{
 			visited[parent_id]= true;
 			for (int i = 0; i < vertex_num; i++){
 				double length = graph[parent_id][i];
-				ini = current_edge[parent_id];
+				double ini = current_edge[parent_id];
 				if (length != INF || length != 0 || !visited[i]){
 					if (ini + length < current_edge[i]){
                         current_edge[i] = ini + length;
@@ -164,7 +164,7 @@ double Weighted_graph::distance( int m, int n ) const{
                 visited[parent_id] = true;
                 for (int i = 0; i < vertex_num; i++){
                     double length = graph[parent_id][i];
-                    int ini = current_edge[parent_id];
+                    double ini = current_edge[parent_id];
                     if (length != INF || length != 0){
                         if (ini + length < current_edge[i]){
                             current_edge[i] = ini + length;
