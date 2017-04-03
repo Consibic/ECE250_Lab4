@@ -28,13 +28,13 @@ class Weighted_graph {
 		static const double INF;
 		int* degree_array;
 		double** graph;
-		bool* visited;
-		double* current_edge;
+		int* visited;
+		//double* current_edge;
 		int vertex_num;
 		int edge_num;
-		//int visit_count;
         Leftist_heap<Weighted_graph_vertex> *heap;
-		mutable bool status;
+		mutable int last_parent;
+		mutable int visit_count;
         mutable bool modified;
 
 	public:
@@ -55,13 +55,13 @@ const double Weighted_graph::INF = std::numeric_limits<double>::infinity();
 
 Weighted_graph::Weighted_graph( int n ){
     graph = new double*[n];
-    visited = new bool[n];
+    visited = new int[n];
     degree_array = new int[n];
     heap = new Leftist_heap<Weighted_graph_vertex>();
-    current_edge = new double[n];
+    //current_edge = new double[n];
     edge_num = 0;
-    //visit_count = 0;
-    status = true;
+    visit_count = 0;
+    last_parent = -1;
     //modified = true;
     for(int i = 0; i < n; i++){
         graph[i] = new double[n];
@@ -71,7 +71,7 @@ Weighted_graph::Weighted_graph( int n ){
         }
         degree_array[i] = 0;
         visited[i] = false;
-        current_edge[i] = INF;
+        //current_edge[i] = INF;
     }
     vertex_num = n;
 }
@@ -85,7 +85,7 @@ Weighted_graph::~Weighted_graph(){
     delete [] degree_array;
     heap->clear();
 	delete heap;
-    delete [] current_edge;
+    //delete [] current_edge;
 }
 
 int Weighted_graph::degree( int n ) const{
@@ -115,67 +115,72 @@ double Weighted_graph::distance( int m, int n ) const{
     if(m == n) return 0.0;
     double value = INF;
     int ini_len = 0.0;
-	if (current_edge[m] != 0.0 || modified){
+	if (last_parent != m || modified){
 		heap->clear();
-		for(int i = 0; i < vertex_num; i++){
-			if (i == m) current_edge[i] = ini_len;
-			else current_edge[i] = INF;
-		}
+		//for(int i = 0; i < vertex_num; i++){
+		//	if (i == m){
+		//		current_edge[i] = ini_len;
+		//	}
+		//	else{
+		//		current_edge[i] = INF;
+		//	}
+		//}
 		Weighted_graph_vertex *root = new Weighted_graph_vertex(m, ini_len);
 		heap->push(*root);
 		delete root;
-		while(!heap->empty()){
+		while(!heap->empty() && value){
 			Weighted_graph_vertex parent = heap->pop();
 			int parent_id = parent.getId();
-			visited[parent_id]= true;
+			visited[parent_id]= visit_count;
 			for (int i = 0; i < vertex_num; i++){
 				double length = graph[parent_id][i];
-				double ini = current_edge[parent_id];
-				if (length != INF || length != 0 || !visited[i]){
-					if (ini + length < current_edge[i]){
-                        current_edge[i] = ini + length;
-                        Weighted_graph_vertex *next = new Weighted_graph_vertex(i, current_edge[i]);
+				double ini = graph[m][parent_id];
+				if (length != INF || length != 0 || visited[i] != visit_count){
+					if (ini + length < graph[m][i]){
+                        graph[m][i] = ini + length;
+                        Weighted_graph_vertex *next = new Weighted_graph_vertex(i, graph[m][i]);
                         heap->push(*next);
                         delete next;
                     }
 				}
 			}
 			if (parent_id == n){
-				value = current_edge[parent_id];
-				modified = false;
-				return value;
+				value = graph[m][parent_id];
+				break;
 			}
 		}
 		modified = false;
 	}
 	else{
-		if (visited[n]){
-			return current_edge[n];
+		if (visited[n] == visit_count - 1){
+			return graph[m][n];
 		}
 		else{
             while(!heap->empty()){
                 Weighted_graph_vertex parent = heap->pop();
                 int parent_id = parent.getId();
-                visited[parent_id] = true;
+                visited[parent_id] = visit_count;
                 for (int i = 0; i < vertex_num; i++){
                     double length = graph[parent_id][i];
-                    double ini = current_edge[parent_id];
+                    double ini = graph[m][parent_id];
                     if (length != INF || length != 0){
-                        if (ini + length < current_edge[i]){
-                            current_edge[i] = ini + length;
-                            Weighted_graph_vertex *next = new Weighted_graph_vertex(i, current_edge[i]);
+                        if (ini + length < graph[m][i]){
+                            graph[m][i] = ini + length;
+                            Weighted_graph_vertex *next = new Weighted_graph_vertex(i, graph[m][i]);
                             heap->push(*next);
                             delete next;
                         }
                     }
                 }
                 if (parent_id == n){
-                    value = current_edge[parent_id];
-                    return value;
+                    value = graph[m][parent_id];
+                    break;
                 }
             }
 		}
 	}
+	visit_count += 1;
+	last_parent = m;
     //heap->clear();
     return value;
 }
