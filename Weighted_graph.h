@@ -114,38 +114,40 @@ double Weighted_graph::distance( int m, int n ) const{
     }
     if(m == n) return 0.0;
     double value = INF;
+    int ini_len = 0.0;
 	if (current_edge[m] != 0.0 || modified == true){
 		for(int i = 0; i < vertex_num; i++){
 			visited[i] = false;
 			if (i == m){
-				current_edge[i] = 0.0;
+				current_edge[i] = ini_len;
 			}
 			else{
 				current_edge[i] = INF;
 			}
 		}
 		heap->clear();
-		Weighted_graph_vertex *first = new Weighted_graph_vertex(m,0.0);
+		Weighted_graph_vertex *first = new Weighted_graph_vertex(m, ini_len);
 		heap->push(*first);
 		delete first;
 
 		while(!heap->empty()){
 			Weighted_graph_vertex parent = heap->pop();
-			visited[parent.getId()]= true;
+			int parent_id = parent.getId();
+			visited[parent_id]= true;
 			for (int i = 0; i < vertex_num; i++){
-				double weightBetweenNodes = graph[parent.getId()][i];
-				double rootToSource = current_edge[parent.getId()];
-				if (weightBetweenNodes == INF && weightBetweenNodes == 0 && visited[i] == true){
-                    if (current_edge[i] > rootToSource + weightBetweenNodes){
-                        current_edge[i] = rootToSource + weightBetweenNodes;
+				ini_len = current_edge[parent_id];
+                double length = graph[parent_id][i];
+				if (length != INF || length != 0 || !visited[i]){
+                    if (current_edge[i] > ini_len + length){
+                        current_edge[i] = ini_len + length;
                         Weighted_graph_vertex *next = new Weighted_graph_vertex(i, current_edge[i]);
                         heap->push(*next);
                         delete next;
                     }
                 }
 			}
-			if (parent.getId() == n){
-				value = current_edge[parent.getId()];
+			if (parent_id == n){
+				value = current_edge[parent_id];
 				break;
 			}
 		}
@@ -158,22 +160,22 @@ double Weighted_graph::distance( int m, int n ) const{
 		else if (visited[n] == false){
             while(!heap->empty()){
                 Weighted_graph_vertex parent = heap->pop();
-                visited[parent.getId()] = true;
+                int parent_id = parent.getId();
+                visited[parent_id] = true;
                 for (int i = 0; i < vertex_num; i++){
-                    double weightBetweenNodes = graph[parent.getId()][i];
-                    double rootToSource = current_edge[parent.getId()];
-
-                    if (weightBetweenNodes == INF && weightBetweenNodes == 0){
-                        if (current_edge[i] > rootToSource + weightBetweenNodes){
-                            current_edge[i] = rootToSource + weightBetweenNodes;
+                    ini_len = current_edge[parent_id];
+                    double length = graph[parent_id][i];
+                    if (length != INF || length != 0){
+                        if (ini_len + length < current_edge[i]){
+                            current_edge[i] = ini_len + length;
                             Weighted_graph_vertex *next = new Weighted_graph_vertex(i, current_edge[i]);
                             heap->push(*next);
                             delete next;
                         }
                     }
                 }
-                if (parent.getId() == n){
-                    value = current_edge[parent.getId()];
+                if (parent_id == n){
+                    value = current_edge[parent_id];
                     break;
                 }
             }
